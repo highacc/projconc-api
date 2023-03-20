@@ -96,3 +96,30 @@ export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBod
         next(error);
     }
 };
+
+export const deleteNote: RequestHandler = async (req, res, next) => {
+    const noteId = req.params.noteId;
+
+    try {
+        if (!mongoose.isValidObjectId(noteId)) {
+            throw createHttpError(400, "Invalid note id: " + noteId);
+        }
+
+        const note = await NoteModel.findById(noteId).exec();
+
+        if (!note) {
+            throw createHttpError(404, "Note not found");
+        }
+
+        // Error: Property 'remove' does not exist on type 'Document<unknown, {}, { createdAt: NativeDate; updatedAt: NativeDate; } & { title: string; text?: string | undefined; }> & Omit<{ createdAt: NativeDate; updatedAt: NativeDate; } & { ...; } & { ...; }, never>'
+        
+        // await note.remove();
+
+        await NoteModel.findByIdAndRemove(noteId);
+
+        res.sendStatus(204);
+
+    } catch (error) {
+        next(error);
+    }
+}
