@@ -112,9 +112,10 @@ export const deleteNote: RequestHandler = async (req, res, next) => {
         }
 
         // Error: Property 'remove' does not exist on type 'Document<unknown, {}, { createdAt: NativeDate; updatedAt: NativeDate; } & { title: string; text?: string | undefined; }> & Omit<{ createdAt: NativeDate; updatedAt: NativeDate; } & { ...; } & { ...; }, never>'
-        
+
         // await note.remove();
 
+        // I used this altenative method found in the mongoose documentation
         await NoteModel.findByIdAndRemove(noteId);
 
         res.sendStatus(204);
